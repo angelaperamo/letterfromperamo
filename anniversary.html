@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Especially for You</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --cream:      #ffffff;
+  --cream-2:    #fdeef3;
+  --blush:      #f9dbe6;
+  --rose:       #ef9fb8;
+  --rose-deep:  #de6f92;
+  --mauve:      #5b3a4b;
+  --mauve-soft: #8a6a78;
+  --sage:       #8ba889;
+  --sage-deep:  #5f7d5e;
+  --gold:       #cd9b6a;
+  --paper:      #ffffff;
+  --shadow:     rgba(214, 90, 130, 0.18);
+}
+
+*{
+  box-sizing: border-box;
+}
+
+html,
+body{
+  margin:0;
+  padding:0;
+  height:100%;
+  background:var(--cream);
+  overflow:hidden;
+  font-family:'Jost', sans-serif;
+  color:var(--mauve);
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  background:radial-gradient(
+    circle at 20% 15%,
+    var(--cream-2),
+    var(--cream) 60%
+  );
+}
+
+/* ---------- ambient floating petals ---------- */
+
+.petals{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+  overflow:hidden;
+}
+
+.petal{
+  position:absolute;
+  top:-5%;
+  width:14px;
+  height:14px;
+  background:var(--rose);
+  opacity:0.35;
+  border-radius:70% 30% 65% 35% / 60% 40% 60% 40%;
+  animation:fall linear infinite;
+}
+
+@keyframes fall{
+  to{
+    transform:
+      translateY(115vh)
+      translateX(var(--drift,30px))
+      rotate(300deg);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .petal{
+    animation:none;
+    display:none;
+  }
+}
+
+/* ---------- shared stage frame ---------- */
+
+.app{
+  position:relative;
+  z-index:2;
+  height:100dvh;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(16px,4vw,40px);
+}
+
+.stage{
+  width:100%;
+  max-width:460px;
+  height:min(100%,900px);
+  max-height:92dvh;
+  position:relative;
+}
+
+.card{
+  position:absolute;
+  inset:0;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  background:var(--paper);
+  border-radius:22px;
+  box-shadow:
+    0 30px 60px -20px var(--shadow),
+    0 2px 10px rgba(91,58,75,0.06);
+  overflow:hidden;
+}
+
+.card.is-active{
+  display:flex;
+}
+
+/* ---------- romantic reveal animation ---------- */
+
+.card.is-active{
+  animation:cardIn 0.7s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes cardIn{
+  from{
+    opacity:0;
+    transform:scale(0.94) translateY(14px);
+  }
+
+  to{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .card.is-active{
+    animation:none;
+  }
+}
+
+/* ---------- heart burst ---------- */
+
+.heart-burst{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:6;
+  overflow:hidden;
+}
+
+.burst-heart{
+  position:absolute;
+  left:50%;
+  top:62%;
+  transform:translate(-50%,-50%);
+  opacity:0;
+  color:var(--rose-deep);
+  will-change:transform,opacity;
+  animation:heartFly 1.4s ease-out forwards;
+}
+
+@keyframes heartFly{
+  0%{
+    transform:translate(-50%,-50%) scale(0.3) rotate(0deg);
+    opacity:0;
+  }
+
+  18%{
+    opacity:1;
+  }
+
+  100%{
+    transform:
+      translate(
+        calc(-50% + var(--tx)),
+        calc(-50% + var(--ty))
+      )
+      scale(var(--sc))
+      rotate(var(--rot));
+
+    opacity:0;
+  }
+}
+
+.glow-pulse{
+  animation:glowPulse 0.9s ease-out;
+}
+
+@keyframes glowPulse{
+  0%{
+    box-shadow:
+      0 30px 60px -20px var(--shadow),
+      0 0 0 0 rgba(230,163,184,0.5);
+  }
+
+  40%{
+    box-shadow:
+      0 30px 60px -20px var(--shadow),
+      0 0 0 24px rgba(230,163,184,0);
+  }
+
+  100%{
+    box-shadow:
+      0 30px 60px -20px var(--shadow),
+      0 2px 10px rgba(91,58,75,0.06);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .burst-heart{
+    animation:none;
+    display:none;
+  }
+
+  .glow-pulse{
+    animation:none;
+  }
+}
+
+/* ---------- music toggle ---------- */
+
+.music-toggle{
+  position:fixed;
+  top:clamp(14px,3vw,22px);
+  right:clamp(14px,3vw,22px);
+  z-index:10;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:none;
+  background:var(--paper);
+  box-shadow:0 8px 18px -6px rgba(91,58,75,0.3);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:var(--rose-deep);
+  transition:transform 0.18s ease;
+}
+
+.music-toggle.is-visible{
+  display:flex;
+}
+
+.music-toggle:hover{
+  transform:scale(1.06);
+}
+
+.music-toggle svg{
+  width:19px;
+  height:19px;
+}
+
+.music-toggle .icon-muted{
+  display:none;
+}
+
+.music-toggle.is-muted .icon-playing{
+  display:none;
+}
+
+.music-toggle.is-muted .icon-muted{
+  display:block;
+}
+
+/* ============================================================
+   STAGE 1 — PASSWORD
+   ============================================================ */
+
+#stage-lock{
+  justify-content:center;
+  padding:clamp(28px,6vw,48px);
+  text-align:center;
+  gap:0;
+}
+
+#stage-lock::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(
+      circle at 15% 12%,
+      var(--blush) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 88%,
+      var(--blush) 0%,
+      transparent 40%
+    );
+  opacity:0.9;
+  z-index:0;
+}
+
+.lock-inner{
+  position:relative;
+  z-index:1;
+  width:100%;
+}
+
+.lock-mark{
+  width:46px;
+  height:46px;
+  margin:0 auto 22px;
+  color:var(--rose-deep);
+}
+
+.lock-eyebrow{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:clamp(0.95rem,2.4vw,1.05rem);
+  color:var(--mauve-soft);
+  margin:0 0 6px;
+}
+
+.lock-title{
+  font-family:'Caveat',cursive;
+  font-weight:700;
+  font-size:clamp(2.1rem,7vw,2.7rem);
+  color:var(--mauve);
+  margin:0 0 18px;
+  line-height:1.1;
+}
+
+.lock-note{
+  font-size:0.98rem;
+  line-height:1.55;
+  color:var(--mauve-soft);
+  max-width:320px;
+  margin:0 auto 28px;
+}
+
+.date-inputs{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.date-inputs input{
+  width:3.1em;
+  text-align:center;
+  font-family:'Jost',sans-serif;
+  font-size:1.5rem;
+  font-weight:500;
+  letter-spacing:0.05em;
+  padding:10px 4px;
+  border:none;
+  border-bottom:2px solid var(--blush);
+  background:transparent;
+  color:var(--mauve);
+  outline:none;
+  transition:border-color 0.25s ease;
+}
+
+.date-inputs input:focus{
+  border-color:var(--rose-deep);
+}
+
+.date-sep{
+  font-size:1.4rem;
+  color:var(--rose);
+  font-weight:300;
+}
+
+.date-labels{
+  display:flex;
+  justify-content:center;
+  gap:46px;
+  margin-bottom:22px;
+}
+
+.date-labels span{
+  font-size:0.7rem;
+  letter-spacing:0.08em;
+  color:var(--mauve-soft);
+  opacity:0.7;
+}
+
+.unlock-btn{
+  font-family:'Jost',sans-serif;
+  font-size:0.95rem;
+  font-weight:500;
+  letter-spacing:0.02em;
+  color:var(--paper);
+  background:
+    linear-gradient(
+      135deg,
+      var(--rose-deep),
+      var(--rose)
+    );
+  border:none;
+  padding:13px 34px;
+  border-radius:999px;
+  cursor:pointer;
+  box-shadow:0 10px 22px -8px rgba(192,120,144,0.6);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.unlock-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 26px -8px rgba(192,120,144,0.7);
+}
+
+.unlock-btn:active{
+  transform:translateY(0);
+}
+
+.lock-disclaimer{
+  margin-top:22px;
+  font-size:0.76rem;
+  color:var(--mauve-soft);
+  opacity:0.65;
+  line-height:1.5;
+}
+
+.lock-error{
+  min-height:20px;
+  font-size:0.82rem;
+  color:var(--rose-deep);
+  margin-bottom:4px;
+  font-weight:500;
+}
+
+.shake{
+  animation:shake 0.4s;
+}
+
+@keyframes shake{
+  10%,90%{
+    transform:translateX(-2px);
+  }
+
+  20%,80%{
+    transform:translateX(4px);
+  }
+
+  30%,50%,70%{
+    transform:translateX(-8px);
+  }
+
+  40%,60%{
+    transform:translateX(8px);
+  }
+}
+
+/* ============================================================
+   STAGE 2 — BOUQUET
+   ============================================================ */
+
+#stage-bouquet{
+  justify-content:flex-start;
+  background:
+    linear-gradient(
+      180deg,
+      var(--cream-2),
+      var(--cream) 55%
+    );
+}
+
+.bouquet-wrap{
+  position:relative;
+  width:100%;
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:
+    clamp(18px,4vw,28px)
+    clamp(18px,4vw,28px)
+    0;
+  min-height:0;
+}
+
+.bouquet-img{
+  position:relative;
+  z-index:2;
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:block;
+  margin:0 auto;
+  filter:drop-shadow(
+    0 18px 30px rgba(91,58,75,0.16)
+  );
+  animation:floatSlow 6s ease-in-out infinite;
+}
+
+@keyframes floatSlow{
+  0%,100%{
+    transform:translateY(0) scale(1);
+  }
+
+  50%{
+    transform:translateY(-10px) scale(1.015);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .bouquet-img{
+    animation:none;
+  }
+}
+
+/* ---------- floating hearts ---------- */
+
+.heart-field{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.float-heart{
+  position:absolute;
+  bottom:-8%;
+  color:var(--rose);
+  opacity:0;
+  animation:floatUp linear infinite;
+}
+
+@keyframes floatUp{
+  0%{
+    transform:
+      translateY(0)
+      translateX(0)
+      rotate(0deg)
+      scale(var(--sc,1));
+
+    opacity:0;
+  }
+
+  12%{
+    opacity:var(--op,0.55);
+  }
+
+  85%{
+    opacity:var(--op,0.55);
+  }
+
+  100%{
+    transform:
+      translateY(-125%)
+      translateX(var(--drift,20px))
+      rotate(var(--rot,20deg))
+      scale(var(--sc,1));
+
+    opacity:0;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .float-heart{
+    animation:none;
+    display:none;
+  }
+}
+
+/* ---------- photo styling ---------- */
+
+.photo-slot{
+  position:absolute;
+  background-color:var(--paper);
+  border-radius:6px;
+  box-shadow:0 8px 18px -6px rgba(0,0,0,0.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  cursor:pointer;
+  border:4px solid var(--paper);
+  z-index:3;
+  transition:transform 0.2s ease;
+}
+
+.photo-slot:hover{
+  transform:scale(1.04) rotate(0deg) !important;
+}
+
+.photo-slot img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* ---------- song caption ---------- */
+
+.song-caption{
+  flex-shrink:0;
+  text-align:center;
+  padding:
+    2px
+    clamp(20px,6vw,40px)
+    4px;
+
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:0.72rem;
+  line-height:1.45;
+  color:var(--mauve-soft);
+  opacity:0.75;
+}
+
+.song-caption .song-title{
+  font-weight:600;
+  font-style:normal;
+  color:var(--rose-deep);
+}
+
+/* ---------- swipe hint ---------- */
+
+.swipe-hint{
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding:
+    14px 0
+    clamp(18px,4vh,26px);
+
+  cursor:pointer;
+
+  background:
+    linear-gradient(
+      0deg,
+      var(--cream) 55%,
+      transparent
+    );
+}
+
+.swipe-hint span{
+  font-size:0.82rem;
+  color:var(--mauve-soft);
+  letter-spacing:0.02em;
+}
+
+.chevron-stack{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  height:22px;
+}
+
+.chevron-stack svg{
+  width:20px;
+  height:12px;
+  margin-top:-6px;
+  color:var(--rose-deep);
+  animation:chevbounce 1.6s ease-in-out infinite;
+}
+
+.chevron-stack svg:nth-child(2){
+  animation-delay:0.15s;
+  opacity:0.6;
+}
+
+@keyframes chevbounce{
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .chevron-stack svg{
+    animation:none;
+  }
+}
+
+/* ============================================================
+   STAGE 3 — LETTER
+   ============================================================ */
+
+#stage-letter{
+  padding:0;
+}
+
+.letter-scroll{
+  width:100%;
+  height:100%;
+  overflow-y:auto;
+
+  padding:
+    clamp(30px,7vw,46px)
+    clamp(26px,7vw,42px)
+    40px;
+
+  background:
+    radial-gradient(
+      circle at 90% 4%,
+      var(--blush) 0%,
+      transparent 45%
+    );
+}
+
+.letter-back{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:none;
+  background:none;
+  color:var(--mauve-soft);
+  font-family:'Jost',sans-serif;
+  font-size:0.8rem;
+  cursor:pointer;
+  padding:0;
+  margin-bottom:22px;
+  opacity:0.75;
+}
+
+.letter-back svg{
+  width:13px;
+  height:13px;
+}
+
+.letter-heading{
+  font-family:'Caveat',cursive;
+  font-weight:700;
+  font-size:clamp(2.2rem,8vw,2.7rem);
+  color:var(--mauve);
+  margin:0 0 4px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.letter-heading svg{
+  width:22px;
+  height:22px;
+  color:var(--rose-deep);
+  flex-shrink:0;
+}
+
+.letter-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:1rem;
+  color:var(--mauve-soft);
+  margin:0 0 26px;
+}
+
+.letter-body p{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.12rem,3vw,1.28rem);
+  line-height:1.65;
+  color:var(--mauve);
+  margin:0 0 20px;
+  max-width:60ch;
+}
+
+.letter-sign{
+  margin-top:10px;
+  font-family:'Caveat',cursive;
+  font-weight:600;
+  font-size:1.9rem;
+  color:var(--rose-deep);
+}
+
+.letter-divider{
+  width:42px;
+  height:2px;
+  background:var(--blush);
+  margin:26px 0;
+  border-radius:2px;
+}
+
+.letter-footer{
+  font-size:0.7rem;
+  color:var(--mauve-soft);
+  opacity:0.55;
+  margin-top:6px;
+}
+
+/* ---------- memories gallery ---------- */
+
+.memories-title{
+  font-family:'Caveat',cursive;
+  font-weight:700;
+  font-size:clamp(1.7rem,5.5vw,2.1rem);
+  color:var(--mauve);
+  margin:8px 0 2px;
+}
+
+.memories-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  color:var(--mauve-soft);
+  font-size:0.92rem;
+  margin:0 0 16px;
+}
+
+.memory-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:8px;
+}
+
+.memory-grid .photo-slot{
+  position:static;
+  width:100%;
+  aspect-ratio:1 / 1;
+  border-radius:12px;
+  border-width:0;
+}
+
+.memory-grid .photo-slot img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* ---------- video after memories ---------- */
+
+.memory-video{
+  width:100%;
+  margin-top:24px;
+  margin-bottom:20px;
+  border-radius:14px;
+  overflow:hidden;
+  background:#000;
+  box-shadow:
+    0 10px 25px -8px rgba(91,58,75,0.25);
+}
+
+.memory-video video{
+  width:100%;
+  display:block;
+  border-radius:14px;
+}
+
+/* ---------- fullscreen lightbox ---------- */
+
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(91,58,75,0.55);
+  backdrop-filter:blur(2px);
+  padding:24px;
+  cursor:zoom-out;
+}
+
+.lightbox.is-active{
+  display:flex;
+  animation:flashIn 0.35s ease-out;
+}
+
+.lightbox img{
+  max-width:100%;
+  max-height:100%;
+  border-radius:10px;
+  border:6px solid var(--paper);
+  box-shadow:0 30px 60px -15px rgba(0,0,0,0.5);
+  animation:flashZoom 0.35s cubic-bezier(.2,.9,.3,1.3);
+}
+
+@keyframes flashIn{
+  from{
+    background:rgba(255,255,255,0.95);
+  }
+
+  to{
+    background:rgba(91,58,75,0.55);
+  }
+}
+
+@keyframes flashZoom{
+  from{
+    transform:scale(0.7);
+    opacity:0;
+  }
+
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .lightbox.is-active{
+    animation:none;
+  }
+
+  .lightbox img{
+    animation:none;
+  }
+}
+
+/* ---------- scrollbar ---------- */
+
+.letter-scroll::-webkit-scrollbar{
+  width:5px;
+}
+
+.letter-scroll::-webkit-scrollbar-thumb{
+  background:var(--blush);
+  border-radius:4px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (min-width:700px){
+  .stage{
+    max-width:500px;
+  }
+}
+
+@media (min-height:820px) and (min-width:700px){
+  .stage{
+    max-height:820px;
+  }
+}
+
+@media (max-width:360px){
+  .date-inputs input{
+    font-size:1.3rem;
+  }
+
+  .date-labels{
+    gap:34px;
+  }
+}
+
+@media (max-height:620px){
+  .lock-note{
+    margin-bottom:18px;
+  }
+
+  .lock-title{
+    margin-bottom:10px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="petals" id="petals"></div>
+
+<div class="app">
+  <div class="stage">
+
+    <!-- ========================================================
+         STAGE 1: PASSWORD
+         ======================================================== -->
+
+    <div class="card is-active" id="stage-lock">
+
+      <div class="lock-inner">
+
+        <svg class="lock-mark"
+             viewBox="0 0 48 48"
+             fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+
+          <path
+            d="M24 42s-16-9.8-16-21.2C8 13.6 13 9 19 9c2.6 0 5 1.2 5 1.2S26.4 9 29 9c6 0 11 4.6 11 11.8C40 32.2 24 42 24 42z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"/>
+
+          <path
+            d="M18 22c1.5-2 4-2 5.5 0"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"/>
+
+          <path
+            d="M24.5 22c1.5-2 4-2 5.5 0"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"/>
+
+        </svg>
+
+        <p class="lock-eyebrow">
+          a little something
+        </p>
+
+        <h1 class="lock-title">
+          Especially for You
+        </h1>
+
+        <p class="lock-note" id="lock-note-text">
+          Enter our anniversary date to unwrap it.
+        </p>
+
+        <div class="lock-error" id="lock-error"></div>
+
+        <form id="lock-form" autocomplete="off">
+
+          <div class="date-inputs">
+
+            <input
+              type="text"
+              inputmode="numeric"
+              maxlength="2"
+              id="input-mm"
+              placeholder="MM"
+              aria-label="Month">
+
+            <span class="date-sep">/</span>
+
+            <input
+              type="text"
+              inputmode="numeric"
+              maxlength="2"
+              id="input-dd"
+              placeholder="DD"
+              aria-label="Day">
+
+          </div>
+
+          <div class="date-labels">
+            <span>MONTH</span>
+            <span>DAY</span>
+          </div>
+
+          <button
+            type="submit"
+            class="unlock-btn">
+            Unwrap
+          </button>
+
+        </form>
+
+        <p class="lock-disclaimer">
+          Format is MMDD — for example, June 9th is entered as 06 / 09.
+        </p>
+
+      </div>
+
+      <div class="heart-burst" id="heart-burst"></div>
+
+    </div>
+
+
+    <!-- ========================================================
+         STAGE 2: BOUQUET
+         ======================================================== -->
+
+    <div class="card" id="stage-bouquet">
+
+      <div class="bouquet-wrap" id="bouquet-wrap">
+
+        <div class="heart-field" id="heart-field"></div>
+
+        <img
+          class="bouquet-img"
+          src="bouquet.jpg"
+          alt="A bouquet of pink flowers, especially for you">
+
+      </div>
+
+      <p class="song-caption" id="song-caption">
+        <span class="song-title">♪ Song Title</span>
+        — the reason this song is ours goes here.
+      </p>
+
+      <div class="swipe-hint" id="swipe-hint">
+
+        <span id="swipe-label">
+          Swipe up to read your letter
+        </span>
+
+        <div class="chevron-stack">
+
+          <svg viewBox="0 0 20 12" fill="none">
+            <path
+              d="M2 10L10 2L18 10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+          </svg>
+
+          <svg viewBox="0 0 20 12" fill="none">
+            <path
+              d="M2 10L10 2L18 10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+          </svg>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================================
+         STAGE 3: LETTER
+         ======================================================== -->
+
+    <div class="card" id="stage-letter">
+
+      <div class="letter-scroll" id="letter-scroll">
+
+        <button class="letter-back" id="letter-back">
+
+          <svg viewBox="0 0 20 20" fill="none">
+            <path
+              d="M12 16L6 10L12 4"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+          </svg>
+
+          back to the flowers
+
+        </button>
+
+
+        <h2 class="letter-heading">
+
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 21s-8-4.9-8-11.2C4 6.6 6.6 4 9.8 4c1.4 0 2.8.7 2.8.7S14 4 15.4 4C18.6 4 21 6.6 21 9.8 21 16.1 12 21 12 21z"/>
+          </svg>
+
+          <span id="letter-title">
+            Happy Anniversary
+          </span>
+
+        </h2>
+
+
+        <p class="letter-sub" id="letter-sub">
+          
+        </p>
+
+
+        <div class="letter-body" id="letter-body">
+          <!-- paragraphs are injected from CONFIG -->
+        </div>
+
+
+        <div class="letter-divider"></div>
+
+
+        <!-- ====================================================
+             MEMORIES
+             ==================================================== -->
+
+        <h3 class="memories-title">
+          A few of our memories
+        </h3>
+
+        <p class="memories-sub">
+          tap any photo to see it full screen
+        </p>
+
+
+        <div class="memory-grid">
+
+          <div class="photo-slot" id="memory-1">
+            <img
+              src="1.jpg"
+              alt="Our first memory">
+          </div>
+
+          <div class="photo-slot" id="memory-2">
+            <img
+              src="2.jpg"
+              alt="Our second memory">
+          </div>
+
+          <div class="photo-slot" id="memory-3">
+            <img
+              src="6.jpg"
+              alt="Our third memory">
+          </div>
+
+        </div>
+
+
+        <!-- ====================================================
+             VIDEO
+             ==================================================== -->
+
+        <div class="memory-video">
+
+          <video
+            controls
+            playsinline
+            preload="metadata"
+            poster="">
+
+            <source
+              src="video.mp4"
+              type="video/mp4">
+
+            Your browser does not support the video tag.
+
+          </video>
+
+        </div>
+
+
+        <p class="letter-footer" id="letter-footer">
+          made with love, just for you
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     MUSIC BUTTON
+     ============================================================ -->
+
+<button
+  class="music-toggle"
+  id="music-toggle"
+  aria-label="Mute or unmute music"
+  type="button">
+
+  <svg
+    class="icon-playing"
+    viewBox="0 0 24 24"
+    fill="currentColor">
+
+    <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+
+    <path
+      d="M16.5 8.5a5 5 0 010 7"
+      stroke="currentColor"
+      stroke-width="1.6"
+      fill="none"
+      stroke-linecap="round"/>
+
+  </svg>
+
+
+  <svg
+    class="icon-muted"
+    viewBox="0 0 24 24"
+    fill="currentColor">
+
+    <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+
+    <path
+      d="M16 9l5 6M21 9l-5 6"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"/>
+
+  </svg>
+
+</button>
+
+
+<!-- ============================================================
+     PHOTO LIGHTBOX
+     ============================================================ -->
+
+<div class="lightbox" id="lightbox">
+
+  <img
+    id="lightbox-img"
+    src=""
+    alt="Your photo, full screen">
+
+</div>
+
+
+<!-- ============================================================
+     BACKGROUND MUSIC
+     ============================================================ -->
+
+<audio
+  id="bg-music"
+  loop
+  preload="none">
+
+  <source
+    src="Lalim By Mateo (Minus One).mp3"
+    type="audio/mpeg">
+
+</audio>
+
+
+<script>
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+
+const CONFIG = {
+
+  // Anniversary password: September 15
+  anniversaryDateMMDD: "0915",
+
+  // Password screen
+  lockNote:
+    "Enter our anniversary date to unwrap it.",
+
+  // Bouquet screen
+  swipeLabel:
+    "Swipe up",
+
+  // Song caption
+  songTitle:
+    "Lalim",
+
+  songReason:
+    "the song that was playing in the car on the day you first said “I love you” to me.",
+
+  // Letter
+  letterTitle:
+    "Happy Anniversary, Baby!",
+
+  
+
+  letterParagraphs: [
+
+    "On August 2, 2025(nanood ka ng live ko), the long wait was finally over because I finally found you. And today, we’re celebrating our 1 year together.",
+
+    "This is the safest flower I can give you on our anniversary. This one will never fade kahit ilang dekada ang lumipas, kahit bumagyo, kahit ano man ang mangyari, nandito pa rin to, parang pagmamahal ko lang sayo naks hahahahaha",
+
+    "Simula nung nakilala kita, ikaw na ang kasama ko sa lahat. Ikaw na ang kakampi ko, ikaw na ang best friend ko, at ikaw na rin ang kapatid ko. Kaya ikaw ang isa sa pinakamahalagang tao sa buhay ko, at ayaw ko nang mawala yon.",
+
+    "Alam kong hindi madali at maraming challenges dahil sa paningin ng iba, mali ang relasyon natin. Pero gusto kong harapin ang buhay na to kasama ka, mahirap man o madali, kasi ikaw lang ang pahinga ko sa mundong magulo.",
+
+    "In our 1 year of being together, ang dami kong naging realizations, na hindi talaga palaging masaya, may mga away at hindi natin maiiwasang masaktan ang isat isa. Pero sa lahat ng nangyari, mas narealize ko na hindi ko kayang mawala ka.",
+
+    "Thank you for staying with me kahit may mga araw na nagkakamali ako at nasasaktan kita. And I hope we continue choosing each other kasi sigurado na ako sayo",
+
+    "Sa isang taon nating pagsasama, mas nagugustuhan kong ikaw ang kasama ko, hindi lang sa mga masasayang araw kundi pati na rin sa mga araw na mahirap at magulo. Marami pa tayong pagdadaanan, at pagdadaanan natin yon nang magkasama. Ang gusto ko lamang ay kasama kang",
+
+    "Happy Anniversary, baby ko!! I love youu so muchh!!!!"
+
+  ],
+
+  letterSignature:
+    "",
+
+  letterFooter:
+    "made with love, just for you"
+
+};
+
+
+/* ============================================================
+   APPLY CONFIG
+   ============================================================ */
+
+document.getElementById(
+  'lock-note-text'
+).textContent = CONFIG.lockNote;
+
+document.getElementById(
+  'swipe-label'
+).textContent = CONFIG.swipeLabel;
+
+document.querySelector(
+  '#song-caption .song-title'
+).textContent = '♪ ' + CONFIG.songTitle;
+
+document.getElementById(
+  'song-caption'
+).lastChild.textContent =
+  ' — ' + CONFIG.songReason;
+
+document.getElementById(
+  'letter-title'
+).textContent = CONFIG.letterTitle;
+
+document.getElementById(
+  'letter-sub'
+).textContent = CONFIG.letterSub;
+
+document.getElementById(
+  'letter-footer'
+).textContent = CONFIG.letterFooter;
+
+
+/* ============================================================
+   LETTER PARAGRAPHS
+   ============================================================ */
+
+const letterBody =
+  document.getElementById('letter-body');
+
+CONFIG.letterParagraphs.forEach(txt => {
+
+  const p = document.createElement('p');
+
+  p.textContent = txt;
+
+  letterBody.appendChild(p);
+
+});
+
+
+const sign = document.createElement('p');
+
+sign.className = 'letter-sign';
+
+sign.textContent =
+  CONFIG.letterSignature;
+
+letterBody.appendChild(sign);
+
+
+/* ============================================================
+   AMBIENT PETALS
+   ============================================================ */
+
+const petalHost =
+  document.getElementById('petals');
+
+for(let i = 0; i < 10; i++){
+
+  const p = document.createElement('div');
+
+  p.className = 'petal';
+
+  p.style.left =
+    Math.random() * 100 + 'vw';
+
+  p.style.setProperty(
+    '--drift',
+    (Math.random() * 80 - 40) + 'px'
+  );
+
+  p.style.animationDuration =
+    (14 + Math.random() * 10) + 's';
+
+  p.style.animationDelay =
+    (Math.random() * -20) + 's';
+
+  p.style.width =
+    p.style.height =
+    (8 + Math.random() * 8) + 'px';
+
+  petalHost.appendChild(p);
+
+}
+
+
+/* ============================================================
+   PASSWORD GATE
+   ============================================================ */
+
+const mm =
+  document.getElementById('input-mm');
+
+const dd =
+  document.getElementById('input-dd');
+
+const form =
+  document.getElementById('lock-form');
+
+const errorEl =
+  document.getElementById('lock-error');
+
+const lockCard =
+  document.getElementById('stage-lock');
+
+const bouquetCard =
+  document.getElementById('stage-bouquet');
+
+const letterCard =
+  document.getElementById('stage-letter');
+
+const heartHost =
+  document.getElementById('heart-burst');
+
+const music =
+  document.getElementById('bg-music');
+
+const musicToggle =
+  document.getElementById('music-toggle');
+
+
+mm.addEventListener('input', () => {
+
+  mm.value =
+    mm.value.replace(/\D/g,'').slice(0,2);
+
+  if(mm.value.length === 2){
+    dd.focus();
+  }
+
+});
+
+
+dd.addEventListener('input', () => {
+
+  dd.value =
+    dd.value.replace(/\D/g,'').slice(0,2);
+
+});
+
+
+/* ============================================================
+   HEART BURST
+   ============================================================ */
+
+function triggerHeartBurst(count = 18){
+
+  for(let i = 0; i < count; i++){
+
+    const h =
+      document.createElement('span');
+
+    h.className =
+      'burst-heart';
+
+    h.textContent =
+      '♥';
+
+    const angle =
+      Math.random() * Math.PI -
+      Math.PI / 2 -
+      Math.PI / 2;
+
+    const dist =
+      90 + Math.random() * 140;
+
+    const tx =
+      Math.cos(angle) * dist * 0.6;
+
+    const ty =
+      Math.sin(angle) * dist - 40;
+
+    h.style.setProperty(
+      '--tx',
+      tx + 'px'
+    );
+
+    h.style.setProperty(
+      '--ty',
+      ty + 'px'
+    );
+
+    h.style.setProperty(
+      '--rot',
+      (Math.random() * 80 - 40) + 'deg'
+    );
+
+    h.style.setProperty(
+      '--sc',
+      (0.8 + Math.random() * 0.9).toFixed(2)
+    );
+
+    h.style.fontSize =
+      (14 + Math.random() * 16) + 'px';
+
+    h.style.animationDelay =
+      (Math.random() * 0.25) + 's';
+
+    heartHost.appendChild(h);
+
+    setTimeout(() => h.remove(), 1800);
+
+  }
+
+}
+
+
+/* ============================================================
+   MUSIC
+   ============================================================ */
+
+function playMusic(){
+
+  music.volume = 0.55;
+
+  const p =
+    music.play();
+
+  if(p && p.catch){
+
+    p.catch(() => {
+      // autoplay blocked
+    });
+
+  }
+
+  musicToggle.classList.add(
+    'is-visible'
+  );
+
+  musicToggle.classList.remove(
+    'is-muted'
+  );
+
+}
+
+
+musicToggle.addEventListener(
+  'click',
+  () => {
+
+    if(music.paused){
+
+      playMusic();
+
+    }else{
+
+      music.muted =
+        !music.muted;
+
+      musicToggle.classList.toggle(
+        'is-muted',
+        music.muted
+      );
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   UNLOCK
+   ============================================================ */
+
+form.addEventListener(
+  'submit',
+  (e) => {
+
+    e.preventDefault();
+
+    const entered =
+      mm.value.padStart(2,'0') +
+      dd.value.padStart(2,'0');
+
+    if(
+      entered.length === 4 &&
+      entered === CONFIG.anniversaryDateMMDD
+    ){
+
+      errorEl.textContent = '';
+
+      lockCard.classList.add(
+        'glow-pulse'
+      );
+
+      triggerHeartBurst();
+
+      playMusic();
+
+      setTimeout(() => {
+
+        lockCard.classList.remove(
+          'is-active',
+          'glow-pulse'
+        );
+
+        bouquetCard.classList.add(
+          'is-active'
+        );
+
+      }, 900);
+
+    }else{
+
+      errorEl.textContent =
+        "That's not quite the date — try again.";
+
+      lockCard.classList.add(
+        'shake'
+      );
+
+      setTimeout(
+        () =>
+          lockCard.classList.remove('shake'),
+        400
+      );
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   FLOATING HEARTS
+   ============================================================ */
+
+const heartField =
+  document.getElementById('heart-field');
+
+for(let i = 0; i < 16; i++){
+
+  const h =
+    document.createElement('span');
+
+  h.className =
+    'float-heart';
+
+  h.textContent =
+    '♥';
+
+  h.style.left =
+    (2 + Math.random() * 96) + '%';
+
+  h.style.fontSize =
+    (10 + Math.random() * 18) + 'px';
+
+  h.style.setProperty(
+    '--sc',
+    (0.7 + Math.random() * 0.8).toFixed(2)
+  );
+
+  h.style.setProperty(
+    '--drift',
+    (Math.random() * 60 - 30) + 'px'
+  );
+
+  h.style.setProperty(
+    '--rot',
+    (Math.random() * 50 - 25) + 'deg'
+  );
+
+  h.style.setProperty(
+    '--op',
+    (0.35 + Math.random() * 0.35).toFixed(2)
+  );
+
+  h.style.animationDuration =
+    (6 + Math.random() * 6) + 's';
+
+  h.style.animationDelay =
+    (Math.random() * -10) + 's';
+
+  heartField.appendChild(h);
+
+}
+
+
+/* ============================================================
+   MEMORY PHOTOS
+   Tap photo -> fullscreen
+   ============================================================ */
+
+const lightbox =
+  document.getElementById('lightbox');
+
+const lightboxImg =
+  document.getElementById('lightbox-img');
+
+
+document.querySelectorAll(
+  '.memory-grid .photo-slot'
+).forEach(slot => {
+
+  slot.addEventListener(
+    'click',
+    () => {
+
+      const img =
+        slot.querySelector('img');
+
+      if(!img) return;
+
+      lightboxImg.src =
+        img.src;
+
+      lightboxImg.alt =
+        img.alt;
+
+      lightbox.classList.add(
+        'is-active'
+      );
+
+    }
+  );
+
+});
+
+
+lightbox.addEventListener(
+  'click',
+  () => {
+
+    lightbox.classList.remove(
+      'is-active'
+    );
+
+    lightboxImg.src = '';
+
+  }
+);
+
+
+/* ============================================================
+   BOUQUET -> LETTER
+   ============================================================ */
+
+function goToLetter(){
+
+  bouquetCard.classList.remove(
+    'is-active'
+  );
+
+  letterCard.classList.add(
+    'is-active'
+  );
+
+}
+
+
+function goToBouquet(){
+
+  letterCard.classList.remove(
+    'is-active'
+  );
+
+  bouquetCard.classList.add(
+    'is-active'
+  );
+
+}
+
+
+document.getElementById(
+  'swipe-hint'
+).addEventListener(
+  'click',
+  goToLetter
+);
+
+
+document.getElementById(
+  'letter-back'
+).addEventListener(
+  'click',
+  goToBouquet
+);
+
+
+/* ============================================================
+   MOBILE SWIPE
+   ============================================================ */
+
+let touchStartY = null;
+
+
+bouquetCard.addEventListener(
+  'touchstart',
+  (e) => {
+
+    touchStartY =
+      e.touches[0].clientY;
+
+  },
+  {passive:true}
+);
+
+
+bouquetCard.addEventListener(
+  'touchend',
+  (e) => {
+
+    if(touchStartY === null){
+      return;
+    }
+
+    const diff =
+      touchStartY -
+      e.changedTouches[0].clientY;
+
+    if(diff > 60){
+      goToLetter();
+    }
+
+    touchStartY = null;
+
+  },
+  {passive:true}
+);
+
+
+/* ============================================================
+   DESKTOP SCROLL
+   ============================================================ */
+
+let wheelLock = false;
+
+
+bouquetCard.addEventListener(
+  'wheel',
+  (e) => {
+
+    if(wheelLock){
+      return;
+    }
+
+    if(e.deltaY > 25){
+
+      wheelLock = true;
+
+      goToLetter();
+
+      setTimeout(
+        () => wheelLock = false,
+        800
+      );
+
+    }
+
+  },
+  {passive:true}
+);
+
+
+bouquetCard.addEventListener(
+  'keydown',
+  (e) => {
+
+    if(
+      e.key === 'ArrowUp' ||
+      e.key === 'Enter'
+    ){
+
+      goToLetter();
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
